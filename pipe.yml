@@ -11,25 +11,21 @@ jobs:
         get_params:
           skip_download: true
       - get: "docker-archlinux-abs"
+        get_params:
+          skip_download: true
       - task: "check-abs-updates"
         image: "docker-archlinux-abs"
         file: "git-archlinux-abs/check-package-updates.yml"
         params:
-          git_user_email: {{git_user_email}}
-          git_user_name: {{git_user_name}}
           output_repo: "git-archlinux-abs"
         on_success:
           task: "check-base-updates"
           image: "docker-archlinux-base"
           file: "git-archlinux-abs/check-package-updates.yml"
           params:
-            git_user_email: {{git_user_email}}
-            git_user_name: {{git_user_name}}
           on_failure:
             put: "git-archlinux-abs"
             params:
-              git_user_email: {{git_user_email}}
-              git_user_name: {{git_user_name}}
               repository: "git-archlinux-abs-output"
 
   - name: "build-image"
