@@ -8,6 +8,9 @@ jobs:
       - get: "git-archlinux-abs"
       - get: "docker-archlinux-base"
         trigger: true
+        get_params:
+          skip_download: true
+      - get: "docker-archlinux-abs"
       - task: "check-abs-updates"
         image: "docker-archlinux-abs"
         file: "git-archlinux-abs/check-package-updates.yml"
@@ -53,7 +56,7 @@ resources:
 
   - name: "docker-archlinux-abs"
     type: "docker-image"
-    check_every: 12h
+    #check_every: 1h
     source:
       email: {{dockerhub_email}}
       username: {{dockerhub_user}}
@@ -62,7 +65,7 @@ resources:
 
   - name: "docker-archlinux-base"
     type: "docker-image"
-    check_every: 12h
+    #check_every: 1h
     source:
       email: {{dockerhub_email}}
       username: {{dockerhub_user}}
