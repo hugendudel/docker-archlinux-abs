@@ -1,0 +1,70 @@
+---
+jobs:
+  - name: "check-updates"
+    serial: true
+    plan:
+      - get: "timer-12h"
+        trigger: true
+      - get: "git-archlinux-abs"
+      - get: "docker-archlinux-base"
+        trigger: true
+      - task: "check-abs-updates"
+        image: "docker-archlinux-abs"
+        file: "git-archlinux-abs/check-package-updates.yml"
+        params:
+          git_user_email: {{git_user_email}}
+          git_user_name: {{git_user_name}}
+          output_repo: "git-archlinux-abs"
+        on_success:
+          task: "check-base-updates"
+          image: "docker-archlinux-base"
+          file: "git-archlinux-abs/check-package-updates.yml"
+          params:
+            git_user_email: {{git_user_email}}
+            git_user_name: {{git_user_name}}
+          on_failure:
+            put: "git-archlinux-abs"
+            params:
+              git_user_email: {{git_user_email}}
+              git_user_name: {{git_user_name}}
+              repository: "git-archlinux-abs-output"
+
+  - name: "build-image"
+    plan:
+      - get: "git-archlinux-abs"
+        trigger: true
+      - put: "docker-archlinux-abs"
+        params:
+          build: "git-archlinux-abs"
+        get_params:
+          skip_download: true
+
+resources:
+  - name: "timer-12h"
+    type: "time"
+    source:
+      interval: "12h"
+  - name: "git-archlinux-abs"
+    type: "git"
+    source:
+      uri: "git@github.com:stingA0815/docker-archlinux-abs.git"
+      branch: "master"
+      private_key: {{github_private_key}}
+
+  - name: "docker-archlinux-abs"
+    type: "docker-image"
+    check_every: 12h
+    source:
+      email: {{dockerhub_email}}
+      username: {{dockerhub_user}}
+      password: {{dockerhub_pw}}
+      repository: "stinga0815/archlinux-abs"
+
+  - name: "docker-archlinux-base"
+    type: "docker-image"
+    check_every: 12h
+    source:
+      email: {{dockerhub_email}}
+      username: {{dockerhub_user}}
+      password: {{dockerhub_pw}}
+      repository: "stinga0815/archlinux-abs"

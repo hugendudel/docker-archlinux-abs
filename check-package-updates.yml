@@ -1,0 +1,14 @@
+---
+platform: "linux"
+#image_resource:
+#  type: "docker-image"
+#  source:
+#    repository: "stinga0815/archlinux-abs"
+inputs:
+  - name: "git-archlinux-abs"
+
+outputs:
+  - name: "git-archlinux-abs-output"
+
+run:
+  path: "git-archlinux-abs/check-package-updates.sh"
