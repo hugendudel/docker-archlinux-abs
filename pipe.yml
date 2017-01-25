@@ -66,4 +66,4 @@ resources:
       email: {{dockerhub_email}}
       username: {{dockerhub_user}}
       password: {{dockerhub_pw}}
-      repository: "stinga0815/archlinux-abs"
+      repository: "stinga0815/archlinux-base"
