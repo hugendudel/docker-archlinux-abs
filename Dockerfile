@@ -5,5 +5,5 @@ RUN echo "Server = http://archpkg.hendr.es/\$repo/os/\$arch" > /etc/pacman.d/mir
 RUN pacman -Sy --needed --noconfirm sudo base-devel abs
 RUN useradd -m -g users -G wheel -s /usr/bin/bash makepkg
 RUN echo 'makepkg ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
-RUN pacman -Scc --noconfirm
+RUN rm -rf /var/cache/pacman/pkg/*
 RUN mv /etc/pacman.d/mirrorlist.tmp /etc/pacman.d/mirrorlist
