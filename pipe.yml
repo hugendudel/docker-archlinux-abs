@@ -37,6 +37,8 @@ jobs:
       - put: "docker-archlinux-abs"
         params:
           build: "git-archlinux-abs"
+          build_args:
+            local_mirror: {{local_mirror}}
         get_params:
           skip_download: true
 
