@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+echo ${local_mirror} > /etc/pacman.conf
 pacman -Sy
 if [[ $(pacman -Qu) && -n ${output_repo} ]]
 then
