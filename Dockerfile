@@ -1,5 +1,6 @@
 FROM stinga0815/archlinux-base:latest
 MAINTAINER Harm Endres <harm.mueller@gmail.com>
+RUN echo $local_mirror
 RUN cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.tmp
 RUN echo "Server = ${local_mirror}\$repo/os/\$arch" > /etc/pacman.d/mirrorlist
 RUN pacman -Sy --needed --noconfirm sudo base-devel abs
