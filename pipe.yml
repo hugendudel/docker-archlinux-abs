@@ -18,11 +18,12 @@ jobs:
         file: "git-archlinux-abs/check-package-updates.yml"
         params:
           output_repo: "git-archlinux-abs"
+          git_user_email: {{git_user_email}}
+          git_user_name: {{git_user_name}}
         on_success:
           task: "check-base-updates"
           image: "docker-archlinux-base"
-          file: "git-archlinux-abs/check-package-updates.yml"
-          params:
+          file: "git-archlinux-abs/check-base.yml"
           on_failure:
             put: "git-archlinux-abs"
             params:

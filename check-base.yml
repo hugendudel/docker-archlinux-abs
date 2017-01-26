@@ -1,0 +1,5 @@
+---
+platform: "linux"
+
+run:
+  path: "git-archlinux-abs/check-base.sh"
