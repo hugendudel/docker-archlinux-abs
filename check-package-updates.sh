@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-echo "Server = ${local_mirror}\$repo/os/\$arch" > /etc/pacman.d/mirrorlist
+echo "Server = http://archpkg.hendr.es/\$repo/os/\$arch" > /etc/pacman.d/mirrorlist
 pacman -Sy
 if [[ $(pacman -Qu) && -n ${output_repo} ]]
 then

@@ -20,7 +20,6 @@ jobs:
           output_repo: "git-archlinux-abs"
           git_user_email: {{git_user_email}}
           git_user_name: {{git_user_name}}
-          local_mirror: {{local_mirror}}
         on_success:
           task: "check-base-updates"
           image: "docker-archlinux-base"
@@ -38,7 +37,6 @@ jobs:
         params:
           build: "git-archlinux-abs"
           build_args:
-            local_mirror: {{local_mirror}}
         get_params:
           skip_download: true
 
