@@ -1,38 +1,35 @@
 ---
 jobs:
-  - name: "check-updates"
+  - name: "updates-abs"
     serial: true
     plan:
-      - get: "timer-12h"
+      - get: "timer-1h"
         trigger: true
-      - get: "git-archlinux-abs"
       - get: "docker-archlinux-base"
         trigger: true
-        get_params:
-          skip_download: true
-      - get: "docker-archlinux-abs"
-        get_params:
-          skip_download: true
-      - task: "check-abs-updates"
-        image: "docker-archlinux-abs"
-        file: "git-archlinux-abs/check-package-updates.yml"
         params:
-          output_repo: "git-archlinux-abs"
-          git_user_email: {{git_user_email}}
-          git_user_name: {{git_user_name}}
-        on_success:
-          task: "check-base-updates"
-          image: "docker-archlinux-base"
-          file: "git-archlinux-abs/check-base.yml"
-          on_failure:
-            put: "git-archlinux-abs"
-            params:
-              repository: "git-archlinux-abs-output"
+          skip_download: true
+      - get: git-archlinux-abs
+      - task: "check-abs-updates"
+        file: "git-archlinux-abs/check-package-updates.yml"
+      - put: "base-notify"
+
+  - name: "updates-base"
+    serial: true
+    plan:
+      - get: "base-notify"
+        trigger: true
+        params:
+          skip_download: true
+      - task: "check-base-updates"
+        file: "git-archlinux-abs/check-base.yml"
+      - put: "build-notify"
 
   - name: "build-image"
     plan:
-      - get: "git-archlinux-abs"
+      - get: "build-notify"
         trigger: true
+      - get: git-archlinux-abs
       - put: "docker-archlinux-abs"
         params:
           build: "git-archlinux-abs"
@@ -41,10 +38,11 @@ jobs:
           skip_download: true
 
 resources:
-  - name: "timer-12h"
+  - name: "timer-1h"
     type: "time"
     source:
-      interval: "12h"
+      interval: "1h"
+
   - name: "git-archlinux-abs"
     type: "git"
     source:
@@ -54,7 +52,6 @@ resources:
 
   - name: "docker-archlinux-abs"
     type: "docker-image"
-    #check_every: 1h
     source:
       email: {{dockerhub_email}}
       username: {{dockerhub_user}}
@@ -63,9 +60,22 @@ resources:
 
   - name: "docker-archlinux-base"
     type: "docker-image"
-    #check_every: 1h
     source:
       email: {{dockerhub_email}}
       username: {{dockerhub_user}}
       password: {{dockerhub_pw}}
       repository: "stinga0815/archlinux-base"
+
+  - name: "base-notify"
+    type: "dummy"
+
+  - name: "build-notify"
+    type: "dummy"
+
+
+
+resource_types:
+  - name: dummy
+    type: docker-image
+    source:
+      repository: "stinga0815/concourse-dummy-resource"
