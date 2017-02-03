@@ -19,6 +19,8 @@ jobs:
     plan:
       - get: "base-notify"
         trigger: true
+        passed:
+          - updates-abs
         params:
           skip_download: true
       - task: "check-base-updates"
